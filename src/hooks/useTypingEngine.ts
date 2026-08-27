@@ -163,8 +163,9 @@ export function useTypingEngine(settings: TestSettings) {
 
   // Keydown Handler
   const handleKeyDown = useCallback((e: React.KeyboardEvent | KeyboardEvent) => {
-    if (status === 'completed' || !isFocused) return;
+    if (status === 'completed') return;
 
+    // Prevent default scrolling for Space / Tab / Backspace
     if (['Tab', 'Space', 'Backspace'].includes(e.code) || e.key.length === 1) {
       if (e.key === ' ' || e.code === 'Space') e.preventDefault();
     }
@@ -228,12 +229,21 @@ export function useTypingEngine(settings: TestSettings) {
 
     // Process Spacebar (Advance Word)
     if (e.key === ' ' || e.code === 'Space') {
-      // Prevent leading empty space advancement
       if (currentCharIndex === 0 && currentWordIndex === 0) return;
+
+      const currentWord = words[currentWordIndex];
+
+      // Strict Mode: Block spacebar if word has uncorrected errors
+      if (settings.strictMode && currentWord) {
+        const hasErrors = currentWord.chars.some(c => c.state === 'incorrect' || c.state === 'extra');
+        if (hasErrors) {
+          playKeySound(true);
+          return;
+        }
+      }
 
       totalKeystrokesRef.current += 1;
 
-      const currentWord = words[currentWordIndex];
       const isWordFullyCorrect = currentWord &&
         currentWord.chars.length === currentCharIndex &&
         currentWord.chars.every(c => c.state === 'correct');
@@ -324,6 +334,21 @@ export function useTypingEngine(settings: TestSettings) {
       }
     }
   }, [status, isFocused, currentWordIndex, currentCharIndex, words, settings, startTest, finishTest, playKeySound]);
+
+  // Window-level key listener for seamless typing without manual clicking
+  useEffect(() => {
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes((e.target as HTMLElement)?.tagName)) {
+        return;
+      }
+      if (status !== 'completed' && isFocused) {
+        handleKeyDown(e);
+      }
+    };
+
+    window.addEventListener('keydown', handleGlobalKeyDown);
+    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
+  }, [status, isFocused, handleKeyDown]);
 
   return {
     status,
