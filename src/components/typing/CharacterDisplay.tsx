@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import type { CharData } from '../../types/typing';
 
 interface CharacterDisplayProps {
@@ -7,7 +7,7 @@ interface CharacterDisplayProps {
   refCallback?: (node: HTMLSpanElement | null) => void;
 }
 
-export const CharacterDisplay: React.FC<CharacterDisplayProps> = ({
+export const CharacterDisplay: React.FC<CharacterDisplayProps> = memo(({
   charData,
   refCallback,
 }) => {
@@ -29,9 +29,9 @@ export const CharacterDisplay: React.FC<CharacterDisplayProps> = ({
   return (
     <span
       ref={refCallback}
-      className={`relative inline-block transition-colors duration-100 ${colorStyle} ${bgStyle}`}
+      className={`relative inline-block transition-colors duration-75 ${colorStyle} ${bgStyle}`}
     >
       {state === 'extra' ? typedChar : char}
     </span>
   );
-};
+});

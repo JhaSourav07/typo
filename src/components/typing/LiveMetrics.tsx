@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import type { TestSettings, EngineStatus } from '../../types/typing';
 import { formatTime } from '../../utils/wpmCalculator';
 
@@ -13,7 +13,7 @@ interface LiveMetricsProps {
   totalWords: number;
 }
 
-export const LiveMetrics: React.FC<LiveMetricsProps> = ({
+export const LiveMetrics: React.FC<LiveMetricsProps> = memo(({
   settings,
   status,
   timeLeft,
@@ -38,7 +38,6 @@ export const LiveMetrics: React.FC<LiveMetricsProps> = ({
 
   return (
     <div className="w-full mt-6 transition-all duration-200">
-      {/* Live Metrics Ticker positioned below text */}
       {!settings.blindMode ? (
         <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12 font-mono text-sm sm:text-base tabular-nums select-none py-2">
           {/* Live WPM */}
@@ -90,4 +89,4 @@ export const LiveMetrics: React.FC<LiveMetricsProps> = ({
       </div>
     </div>
   );
-};
+});

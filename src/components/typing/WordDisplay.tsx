@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import type { WordData } from '../../types/typing';
 import { CharacterDisplay } from './CharacterDisplay';
 
@@ -10,7 +10,7 @@ interface WordDisplayProps {
   charRefCallback?: (charIndex: number, node: HTMLSpanElement | null) => void;
 }
 
-export const WordDisplay: React.FC<WordDisplayProps> = ({
+export const WordDisplay: React.FC<WordDisplayProps> = memo(({
   wordData,
   isCurrentWord,
   currentCharIndex,
@@ -47,4 +47,4 @@ export const WordDisplay: React.FC<WordDisplayProps> = ({
       })}
     </div>
   );
-};
+});
