@@ -22,7 +22,7 @@ export const WordDisplay: React.FC<WordDisplayProps> = ({
   return (
     <div
       ref={wordRef}
-      className={`relative inline-flex items-center mx-1.5 my-1 tracking-wide transition-all ${
+      className={`relative inline-flex items-center mx-2 my-1 tracking-wide transition-all ${
         isCurrentWord
           ? 'border-b-2 border-[var(--accent)] pb-0.5'
           : hasErrors

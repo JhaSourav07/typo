@@ -8,7 +8,7 @@ interface PerformanceChartProps {
 export const PerformanceChart: React.FC<PerformanceChartProps> = ({ timeline }) => {
   if (!timeline || timeline.length === 0) {
     return (
-      <div className="w-full h-48 flex items-center justify-center text-xs text-[var(--text-sub)] bg-[var(--bg-sub)] rounded-xl border border-[var(--border)]">
+      <div className="w-full h-48 flex items-center justify-center text-xs text-[var(--text-sub)] bg-[var(--bg-sub)] rounded-lg border border-[var(--border)]">
         Insufficient timeline data to map graph
       </div>
     );
@@ -37,9 +37,9 @@ export const PerformanceChart: React.FC<PerformanceChartProps> = ({ timeline }) 
   }, '');
 
   return (
-    <div className="w-full bg-[var(--bg-sub)] rounded-xl border border-[var(--border)] p-4 shadow-sm">
+    <div className="w-full bg-[var(--bg-sub)] rounded-lg border border-[var(--border)] p-4 shadow-sm">
       <div className="flex items-center justify-between mb-3 text-xs">
-        <span className="font-semibold text-[var(--text-main)]">Speed Timeline (WPM)</span>
+        <span className="font-semibold text-[var(--text-main)] font-sans">Speed Timeline (WPM)</span>
         <div className="flex items-center gap-4 text-[11px]">
           <div className="flex items-center gap-1.5">
             <span className="w-3 h-0.5 bg-[var(--accent)] rounded-full"></span>
@@ -79,6 +79,7 @@ export const PerformanceChart: React.FC<PerformanceChartProps> = ({ timeline }) 
                   fontSize="10"
                   textAnchor="end"
                   fontFamily="monospace"
+                  className="tabular-nums"
                 >
                   {val}
                 </text>
@@ -111,7 +112,7 @@ export const PerformanceChart: React.FC<PerformanceChartProps> = ({ timeline }) 
               <g key={idx}>
                 <circle cx={x} cy={y} r="3" fill="var(--accent)" />
                 {pt.errors > 0 && (
-                  <circle cx={x} cy={y - 8} r="3.5" fill="#ef4444">
+                  <circle cx={x} cy={y - 8} r="3.5" fill="#f43f5e">
                     <title>{`${pt.errors} errors at ${pt.second}s`}</title>
                   </circle>
                 )}

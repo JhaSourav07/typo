@@ -3,72 +3,122 @@
 
 @layer base {
   :root {
-    --font-sans: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+    /* Design Tokens - Typography */
+    --font-sans: 'Inter', 'Outfit', system-ui, -apple-system, sans-serif;
     --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-  }
 
-  /* Themes */
-  [data-theme="obsidian"] {
-    --bg-main: #0d0f12;
-    --bg-sub: #14181f;
-    --bg-card: #1a202c;
-    --border: #262f3d;
-    --text-main: #e2e8f0;
-    --text-sub: #64748b;
-    --text-untyped: #475569;
-    --accent: #f59e0b;
-    --accent-glow: rgba(245, 158, 11, 0.25);
-    --error: #ef4444;
-    --error-bg: rgba(239, 68, 68, 0.15);
-    --correct: #f59e0b;
-    --caret: #f59e0b;
+    /* Design Tokens - Restrained Border Radius */
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 8px;
+    --radius-xl: 12px;
+
+    /* Design Tokens - Durations & Transitions */
+    --duration-fast: 120ms;
+    --duration-normal: 200ms;
+    --duration-slow: 300ms;
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+    /* Design Tokens - Z-Indexes */
+    --z-base: 1;
+    --z-header: 30;
+    --z-overlay: 40;
+    --z-modal: 50;
+    --z-tooltip: 60;
+
+    /* Default Theme: Electric Violet */
+    --bg-main: #090a0f;
+    --bg-sub: #12141d;
+    --bg-card: #181b26;
+    --bg-elevated: #202433;
+    --border: #262938;
+    --border-subtle: rgba(255, 255, 255, 0.07);
+
+    --text-main: #f1f3f9;
+    --text-sub: #8a90a6;
+    --text-untyped: #404557;
+
+    --accent: #8b5cf6;
+    --accent-hover: #7c3aed;
+    --accent-glow: rgba(139, 92, 246, 0.2);
+
+    --success: #10b981;
+    --warning: #f59e0b;
+    --error: #f43f5e;
+    --error-bg: rgba(244, 63, 94, 0.12);
+    --correct: #f1f3f9;
+    --caret: #8b5cf6;
   }
 
   [data-theme="cyber"] {
     --bg-main: #090d16;
     --bg-sub: #0f172a;
     --bg-card: #1e293b;
-    --border: #334155;
+    --bg-elevated: #334155;
+    --border: #2d3b52;
+    --border-subtle: rgba(255, 255, 255, 0.08);
+
     --text-main: #f8fafc;
-    --text-sub: #64748b;
-    --text-untyped: #475569;
+    --text-sub: #8496b0;
+    --text-untyped: #405066;
+
     --accent: #06b6d4;
-    --accent-glow: rgba(6, 182, 212, 0.3);
+    --accent-hover: #0891b2;
+    --accent-glow: rgba(6, 182, 212, 0.2);
+
+    --success: #10b981;
+    --warning: #f59e0b;
     --error: #f43f5e;
-    --error-bg: rgba(244, 63, 94, 0.15);
-    --correct: #22d3ee;
+    --error-bg: rgba(244, 63, 94, 0.12);
+    --correct: #f8fafc;
     --caret: #06b6d4;
   }
 
   [data-theme="nord"] {
-    --bg-main: #2e3440;
-    --bg-sub: #3b4252;
-    --bg-card: #434c5e;
+    --bg-main: #242933;
+    --bg-sub: #2e3440;
+    --bg-card: #3b4252;
+    --bg-elevated: #434c5e;
     --border: #4c566a;
+    --border-subtle: rgba(255, 255, 255, 0.08);
+
     --text-main: #eceff4;
     --text-sub: #909bb0;
-    --text-untyped: #616e88;
+    --text-untyped: #4f5b70;
+
     --accent: #88c0d0;
-    --accent-glow: rgba(136, 192, 208, 0.25);
+    --accent-hover: #81a1c1;
+    --accent-glow: rgba(136, 192, 208, 0.2);
+
+    --success: #a3be8c;
+    --warning: #ebcb8b;
     --error: #bf616a;
     --error-bg: rgba(191, 97, 106, 0.15);
-    --correct: #81a1c1;
+    --correct: #eceff4;
     --caret: #88c0d0;
   }
 
   [data-theme="monokai"] {
-    --bg-main: #19181a;
-    --bg-sub: #222125;
-    --bg-card: #2d2a2e;
-    --border: #403e41;
+    --bg-main: #141416;
+    --bg-sub: #1e1e22;
+    --bg-card: #27272b;
+    --bg-elevated: #323238;
+    --border: #3c3c44;
+    --border-subtle: rgba(255, 255, 255, 0.08);
+
     --text-main: #fcfcfa;
-    --text-sub: #727072;
-    --text-untyped: #5b595c;
+    --text-sub: #858387;
+    --text-untyped: #48464a;
+
     --accent: #ffd866;
-    --accent-glow: rgba(255, 216, 102, 0.25);
+    --accent-hover: #fce566;
+    --accent-glow: rgba(255, 216, 102, 0.2);
+
+    --success: #a9dc76;
+    --warning: #fc9867;
     --error: #ff6188;
     --error-bg: rgba(255, 97, 136, 0.15);
-    --correct: #a9dc76;
+    --correct: #fcfcfa;
     --caret: #ffd866;
   }
 
@@ -76,15 +126,23 @@
     --bg-main: #000000;
     --bg-sub: #0a0a0a;
     --bg-card: #121212;
+    --bg-elevated: #1a1a1a;
     --border: #222222;
+    --border-subtle: rgba(255, 255, 255, 0.06);
+
     --text-main: #ffffff;
     --text-sub: #71717a;
     --text-untyped: #3f3f46;
+
     --accent: #10b981;
-    --accent-glow: rgba(16, 185, 129, 0.25);
+    --accent-hover: #059669;
+    --accent-glow: rgba(16, 185, 129, 0.2);
+
+    --success: #10b981;
+    --warning: #f59e0b;
     --error: #f43f5e;
     --error-bg: rgba(244, 63, 94, 0.15);
-    --correct: #10b981;
+    --correct: #ffffff;
     --caret: #10b981;
   }
 }
@@ -97,24 +155,32 @@ body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color var(--duration-normal) var(--ease-out), color var(--duration-normal) var(--ease-out);
 }
 
+/* Tabular Numerals */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1, 'zero' 1;
+}
+
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
   background: var(--bg-main);
 }
 ::-webkit-scrollbar-thumb {
   background: var(--border);
-  border-radius: 3px;
+  border-radius: var(--radius-sm);
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-sub);
 }
 
+/* Font Utilities */
 .font-jetbrains {
   font-family: 'JetBrains Mono', monospace;
 }
@@ -128,26 +194,32 @@ body {
   font-family: 'Inter', sans-serif;
 }
 
+/* Caret Keyframes */
 @keyframes pulse-caret {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.1; }
+  50% { opacity: 0.15; }
 }
 
 .caret-smooth {
-  transition: left 0.08s cubic-bezier(0.1, 0.9, 0.2, 1), top 0.08s cubic-bezier(0.1, 0.9, 0.2, 1);
+  transition: left var(--duration-fast) cubic-bezier(0.1, 0.9, 0.2, 1), top var(--duration-fast) cubic-bezier(0.1, 0.9, 0.2, 1);
 }
 
 .caret-pulse {
   animation: pulse-caret 1s infinite ease-in-out;
 }
 
-.glass-panel {
-  background: rgba(20, 24, 31, 0.65);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--border);
+/* Focus Ring Utility */
+.focus-ring {
+  outline: none;
+}
+.focus-ring:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
-.glow-accent {
-  box-shadow: 0 0 25px var(--accent-glow);
+/* Minimal Card/Panel Utility */
+.panel-minimal {
+  background: var(--bg-sub);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
 }

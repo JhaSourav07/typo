@@ -12,8 +12,8 @@ export const Card: React.FC<CardProps> = ({ children, className, glow = false, .
     <div
       className={twMerge(
         clsx(
-          'rounded-xl border border-[var(--border)] bg-[var(--bg-sub)] p-5 transition-all duration-300',
-          glow && 'glow-accent border-[var(--accent)]',
+          'rounded-lg border border-[var(--border)] bg-[var(--bg-sub)] p-5 transition-all duration-150',
+          glow && 'border-[var(--accent)] shadow-sm shadow-[var(--accent-glow)]',
           className
         )
       )}

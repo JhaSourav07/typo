@@ -1,6 +1,8 @@
 import React from 'react';
 import { Clock, Type, Quote, Code, Hash, AtSign } from 'lucide-react';
 import type { TestSettings, TestMode, TimeOption, WordOption, QuoteOption, CodeOption } from '../../types/typing';
+import { SegmentedControl } from '../ui/SegmentedControl';
+import type { SegmentOption } from '../ui/SegmentedControl';
 
 interface ModeSelectorProps {
   settings: TestSettings;
@@ -8,124 +10,97 @@ interface ModeSelectorProps {
 }
 
 export const ModeSelector: React.FC<ModeSelectorProps> = ({ settings, onUpdateSettings }) => {
-  const modes: { id: TestMode; label: string; icon: React.ReactNode }[] = [
+  const mainModeOptions: SegmentOption<TestMode>[] = [
     { id: 'time', label: 'Time', icon: <Clock className="w-3.5 h-3.5" /> },
     { id: 'words', label: 'Words', icon: <Type className="w-3.5 h-3.5" /> },
     { id: 'quote', label: 'Quote', icon: <Quote className="w-3.5 h-3.5" /> },
     { id: 'code', label: 'Code', icon: <Code className="w-3.5 h-3.5" /> },
   ];
 
-  const timeOptions: TimeOption[] = [15, 30, 60, 120];
-  const wordOptions: WordOption[] = [10, 25, 50, 100];
-  const quoteOptions: { id: QuoteOption; label: string }[] = [
+  const timeSubOptions: SegmentOption<TimeOption>[] = [
+    { id: 15, label: '15s' },
+    { id: 30, label: '30s' },
+    { id: 60, label: '60s' },
+    { id: 120, label: '120s' },
+  ];
+
+  const wordSubOptions: SegmentOption<WordOption>[] = [
+    { id: 10, label: 10 },
+    { id: 25, label: 25 },
+    { id: 50, label: 50 },
+    { id: 100, label: 100 },
+  ];
+
+  const quoteSubOptions: SegmentOption<QuoteOption>[] = [
     { id: 'short', label: 'Short' },
     { id: 'medium', label: 'Medium' },
     { id: 'long', label: 'Long' },
   ];
-  const codeOptions: { id: CodeOption; label: string }[] = [
-    { id: 'javascript', label: 'JS / TS' },
+
+  const codeSubOptions: SegmentOption<CodeOption>[] = [
+    { id: 'javascript', label: 'JS/TS' },
     { id: 'python', label: 'Python' },
     { id: 'html', label: 'HTML/CSS' },
     { id: 'sql', label: 'SQL' },
   ];
 
   return (
-    <div className="flex flex-wrap items-center justify-center gap-2 p-1.5 rounded-2xl bg-[var(--bg-sub)] border border-[var(--border)] shadow-sm">
-      {/* Mode Pills */}
-      <div className="flex items-center gap-1 bg-[var(--bg-main)]/60 p-1 rounded-xl border border-[var(--border)]/50">
-        {modes.map((mode) => (
-          <button
-            key={mode.id}
-            onClick={() => onUpdateSettings({ mode: mode.id })}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-              settings.mode === mode.id
-                ? 'bg-[var(--accent)] text-slate-950 shadow-sm font-semibold'
-                : 'text-[var(--text-sub)] hover:text-[var(--text-main)] hover:bg-[var(--bg-card)]'
-            }`}
-          >
-            {mode.icon}
-            <span>{mode.label}</span>
-          </button>
-        ))}
-      </div>
+    <div className="flex flex-wrap items-center justify-center gap-2.5">
+      <SegmentedControl
+        options={mainModeOptions}
+        value={settings.mode}
+        onChange={(mode) => onUpdateSettings({ mode })}
+      />
 
       <div className="h-4 w-[1px] bg-[var(--border)] hidden sm:block"></div>
 
-      {/* Sub-options depending on selected mode */}
-      <div className="flex items-center gap-1 bg-[var(--bg-main)]/60 p-1 rounded-xl border border-[var(--border)]/50">
-        {settings.mode === 'time' &&
-          timeOptions.map((opt) => (
-            <button
-              key={opt}
-              onClick={() => onUpdateSettings({ timeOption: opt })}
-              className={`px-2.5 py-1 text-xs font-mono rounded-md transition-all ${
-                settings.timeOption === opt
-                  ? 'text-[var(--accent)] font-bold bg-[var(--accent)]/15 border border-[var(--accent)]/30'
-                  : 'text-[var(--text-sub)] hover:text-[var(--text-main)]'
-              }`}
-            >
-              {opt}s
-            </button>
-          ))}
+      {settings.mode === 'time' && (
+        <SegmentedControl
+          options={timeSubOptions}
+          value={settings.timeOption}
+          onChange={(timeOption) => onUpdateSettings({ timeOption })}
+          size="sm"
+        />
+      )}
 
-        {settings.mode === 'words' &&
-          wordOptions.map((opt) => (
-            <button
-              key={opt}
-              onClick={() => onUpdateSettings({ wordOption: opt })}
-              className={`px-2.5 py-1 text-xs font-mono rounded-md transition-all ${
-                settings.wordOption === opt
-                  ? 'text-[var(--accent)] font-bold bg-[var(--accent)]/15 border border-[var(--accent)]/30'
-                  : 'text-[var(--text-sub)] hover:text-[var(--text-main)]'
-              }`}
-            >
-              {opt}
-            </button>
-          ))}
+      {settings.mode === 'words' && (
+        <SegmentedControl
+          options={wordSubOptions}
+          value={settings.wordOption}
+          onChange={(wordOption) => onUpdateSettings({ wordOption })}
+          size="sm"
+        />
+      )}
 
-        {settings.mode === 'quote' &&
-          quoteOptions.map((opt) => (
-            <button
-              key={opt.id}
-              onClick={() => onUpdateSettings({ quoteOption: opt.id })}
-              className={`px-2.5 py-1 text-xs font-medium rounded-md transition-all ${
-                settings.quoteOption === opt.id
-                  ? 'text-[var(--accent)] font-bold bg-[var(--accent)]/15 border border-[var(--accent)]/30'
-                  : 'text-[var(--text-sub)] hover:text-[var(--text-main)]'
-              }`}
-            >
-              {opt.label}
-            </button>
-          ))}
+      {settings.mode === 'quote' && (
+        <SegmentedControl
+          options={quoteSubOptions}
+          value={settings.quoteOption}
+          onChange={(quoteOption) => onUpdateSettings({ quoteOption })}
+          size="sm"
+        />
+      )}
 
-        {settings.mode === 'code' &&
-          codeOptions.map((opt) => (
-            <button
-              key={opt.id}
-              onClick={() => onUpdateSettings({ codeOption: opt.id })}
-              className={`px-2.5 py-1 text-xs font-medium rounded-md transition-all ${
-                settings.codeOption === opt.id
-                  ? 'text-[var(--accent)] font-bold bg-[var(--accent)]/15 border border-[var(--accent)]/30'
-                  : 'text-[var(--text-sub)] hover:text-[var(--text-main)]'
-              }`}
-            >
-              {opt.label}
-            </button>
-          ))}
-      </div>
+      {settings.mode === 'code' && (
+        <SegmentedControl
+          options={codeSubOptions}
+          value={settings.codeOption}
+          onChange={(codeOption) => onUpdateSettings({ codeOption })}
+          size="sm"
+        />
+      )}
 
       {(settings.mode === 'time' || settings.mode === 'words') && (
         <>
           <div className="h-4 w-[1px] bg-[var(--border)] hidden sm:block"></div>
-          <div className="flex items-center gap-1 bg-[var(--bg-main)]/60 p-1 rounded-xl border border-[var(--border)]/50">
+          <div className="inline-flex items-center gap-1 p-0.5 rounded-md bg-[var(--bg-sub)] border border-[var(--border)]">
             <button
               onClick={() => onUpdateSettings({ punctuation: !settings.punctuation })}
-              className={`flex items-center gap-1 px-2.5 py-1 text-xs rounded-md transition-all ${
+              className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs rounded-[4px] font-medium transition-all duration-150 cursor-pointer ${
                 settings.punctuation
-                  ? 'text-[var(--accent)] font-bold bg-[var(--accent)]/15 border border-[var(--accent)]/30'
+                  ? 'bg-[var(--accent)]/15 text-[var(--accent)] font-semibold border border-[var(--accent)]/30'
                   : 'text-[var(--text-sub)] hover:text-[var(--text-main)]'
               }`}
-              title="Toggle Punctuation"
             >
               <AtSign className="w-3 h-3" />
               <span>punc</span>
@@ -133,12 +108,11 @@ export const ModeSelector: React.FC<ModeSelectorProps> = ({ settings, onUpdateSe
 
             <button
               onClick={() => onUpdateSettings({ numbers: !settings.numbers })}
-              className={`flex items-center gap-1 px-2.5 py-1 text-xs rounded-md transition-all ${
+              className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs rounded-[4px] font-medium transition-all duration-150 cursor-pointer ${
                 settings.numbers
-                  ? 'text-[var(--accent)] font-bold bg-[var(--accent)]/15 border border-[var(--accent)]/30'
+                  ? 'bg-[var(--accent)]/15 text-[var(--accent)] font-semibold border border-[var(--accent)]/30'
                   : 'text-[var(--text-sub)] hover:text-[var(--text-main)]'
               }`}
-              title="Toggle Numbers"
             >
               <Hash className="w-3 h-3" />
               <span>nums</span>

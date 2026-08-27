@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { X } from 'lucide-react';
+import { IconButton } from './IconButton';
 
 interface ModalProps {
   isOpen: boolean;
@@ -22,19 +23,14 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs animate-fade-in">
       <div
-        className="relative w-full max-w-lg rounded-2xl border border-[var(--border)] bg-[var(--bg-sub)] p-6 shadow-2xl transition-all"
+        className="relative w-full max-w-lg rounded-lg border border-[var(--border)] bg-[var(--bg-sub)] p-6 shadow-2xl transition-all"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between border-b border-[var(--border)] pb-4 mb-4">
-          <h2 className="text-lg font-semibold text-[var(--text-main)] tracking-tight">{title}</h2>
-          <button
-            onClick={onClose}
-            className="p-1 rounded-lg text-[var(--text-sub)] hover:text-[var(--text-main)] hover:bg-[var(--border)] transition"
-          >
-            <X className="w-5 h-5" />
-          </button>
+        <div className="flex items-center justify-between border-b border-[var(--border)] pb-3 mb-4">
+          <h2 className="text-base font-semibold text-[var(--text-main)] font-sans">{title}</h2>
+          <IconButton icon={<X className="w-4 h-4" />} label="Close" onClick={onClose} />
         </div>
         <div className="max-h-[75vh] overflow-y-auto pr-1">{children}</div>
       </div>

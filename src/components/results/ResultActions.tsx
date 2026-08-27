@@ -31,10 +31,10 @@ Built on Typo Platform`;
 
   return (
     <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
-      <Button variant="accent" size="lg" onClick={onNextTest}>
+      <Button variant="primary" size="lg" onClick={onNextTest}>
         <RefreshCw className="w-4 h-4" />
         <span>Next Test</span>
-        <kbd className="ml-1.5 px-1.5 py-0.5 text-[10px] font-mono rounded bg-slate-950/20 text-slate-950 font-bold">
+        <kbd className="ml-1 px-1.5 py-0.5 text-[10px] font-mono rounded-[3px] bg-white/20 text-white font-bold">
           Tab + Enter
         </kbd>
       </Button>

@@ -38,7 +38,7 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
   const activeCharNodeRef = useRef<HTMLSpanElement | null>(null);
   const activeWordNodeRef = useRef<HTMLDivElement | null>(null);
 
-  const [caretPos, setCaretPos] = useState({ top: 12, left: 16, height: 28 });
+  const [caretPos, setCaretPos] = useState({ top: 12, left: 16, height: 32 });
 
   const updateCaretPosition = useCallback(() => {
     if (!containerRef.current) return;
@@ -49,23 +49,22 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
       const charRect = activeCharNodeRef.current.getBoundingClientRect();
       const top = charRect.top - containerRect.top + containerRef.current.scrollTop;
       const left = charRect.left - containerRect.left;
-      const height = charRect.height || 28;
+      const height = charRect.height || 32;
 
       setCaretPos({ top, left, height });
 
-      // Smooth line scrolling: keep active line in view
+      // Smooth line scroll adjustment
       const lineTop = charRect.top - containerRect.top;
-      if (lineTop > 90) {
-        containerRef.current.scrollTop += 45;
+      if (lineTop > 95) {
+        containerRef.current.scrollTop += 48;
       } else if (lineTop < 10) {
-        containerRef.current.scrollTop = Math.max(0, containerRef.current.scrollTop - 45);
+        containerRef.current.scrollTop = Math.max(0, containerRef.current.scrollTop - 48);
       }
     } else if (activeWordNodeRef.current) {
-      // Position caret at end of word when overtyping / awaiting space
       const wordRect = activeWordNodeRef.current.getBoundingClientRect();
       const top = wordRect.top - containerRect.top + containerRef.current.scrollTop;
       const left = wordRect.right - containerRect.left;
-      const height = wordRect.height || 28;
+      const height = wordRect.height || 32;
 
       setCaretPos({ top, left, height });
     }
@@ -90,8 +89,8 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
   const fontClass = `font-${settings.fontFamily}`;
 
   return (
-    <div className="w-full max-w-4xl mx-auto flex flex-col items-center justify-center my-auto py-6">
-      {/* Live Metrics Header */}
+    <div className="w-full max-w-4xl mx-auto flex flex-col items-center justify-center my-auto py-8">
+      {/* Live Metrics Toolbar */}
       <LiveMetrics
         settings={settings}
         status={status}
@@ -103,7 +102,7 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
         totalWords={words.length}
       />
 
-      {/* Main Words Typing Container */}
+      {/* Primary Open Typing Canvas (Borderless & Spacious) */}
       <div
         ref={containerRef}
         tabIndex={0}
@@ -111,16 +110,14 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         onKeyDown={onKeyDown}
-        className={`relative w-full h-[145px] overflow-hidden rounded-2xl bg-[var(--bg-sub)] border p-5 text-xl sm:text-2xl leading-[2.4rem] select-none focus:outline-none transition-all duration-300 ${fontClass} ${
-          isFocused
-            ? 'border-[var(--border)] shadow-xl'
-            : 'border-[var(--border)]/50 opacity-70 blur-[1px]'
+        className={`relative w-full h-[155px] overflow-hidden p-2 text-2xl sm:text-3xl leading-[3rem] select-none focus:outline-none transition-all duration-200 ${fontClass} ${
+          isFocused ? 'opacity-100' : 'opacity-40 blur-[1px]'
         }`}
       >
-        {/* Focus Blur Overlay */}
+        {/* Focus Overlay when canvas loses focus */}
         <FocusOverlay isFocused={isFocused} onFocus={handleContainerClick} />
 
-        {/* Dynamic Smooth Caret */}
+        {/* Subpixel Animated Caret */}
         {isFocused && status !== 'completed' && (
           <Caret
             style={settings.caretStyle}
@@ -130,8 +127,8 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
           />
         )}
 
-        {/* Words Layout */}
-        <div className="flex flex-wrap items-center content-start min-h-[120px] transition-transform duration-200">
+        {/* Open Words Layout */}
+        <div className="flex flex-wrap items-center content-start min-h-[130px]">
           {words.map((wordData, wordIndex) => {
             const isCurrentWord = wordIndex === currentWordIndex;
             return (

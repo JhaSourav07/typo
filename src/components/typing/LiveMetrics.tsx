@@ -37,49 +37,53 @@ export const LiveMetrics: React.FC<LiveMetricsProps> = ({
   }
 
   return (
-    <div className="w-full mb-6 transition-all duration-300">
-      <div className="flex items-center justify-between font-mono text-sm px-2">
+    <div className="w-full mb-8 transition-all duration-200">
+      {/* Live Metrics Toolbar */}
+      <div className="flex items-center justify-between font-mono text-sm px-1">
+        {/* Timer / Counter */}
         <div className="flex items-baseline gap-2">
-          <span className="text-3xl font-extrabold text-[var(--accent)] tracking-tight">
+          <span className="text-3xl sm:text-4xl font-extrabold text-[var(--accent)] tracking-tight tabular-nums">
             {timeDisplay}
           </span>
           {settings.mode === 'words' && (
-            <span className="text-xs text-[var(--text-sub)]">
+            <span className="text-xs text-[var(--text-sub)] tabular-nums">
               / {settings.wordOption} words
             </span>
           )}
         </div>
 
+        {/* Live WPM & Accuracy (hidden in Blind Mode) */}
         {!settings.blindMode ? (
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-8">
             <div className="flex items-baseline gap-1.5">
-              <span className="text-2xl font-bold text-[var(--text-main)]">
+              <span className="text-2xl sm:text-3xl font-bold text-[var(--text-main)] tabular-nums">
                 {isRunning ? liveWpm : 0}
               </span>
-              <span className="text-xs font-sans text-[var(--text-sub)] uppercase font-semibold tracking-wider">
+              <span className="text-[11px] font-sans text-[var(--text-sub)] uppercase font-semibold tracking-wider">
                 wpm
               </span>
             </div>
 
             <div className="flex items-baseline gap-1.5">
-              <span className="text-2xl font-bold text-[var(--text-main)]">
+              <span className="text-2xl sm:text-3xl font-bold text-[var(--text-main)] tabular-nums">
                 {isRunning ? `${liveAccuracy}%` : '100%'}
               </span>
-              <span className="text-xs font-sans text-[var(--text-sub)] uppercase font-semibold tracking-wider">
+              <span className="text-[11px] font-sans text-[var(--text-sub)] uppercase font-semibold tracking-wider">
                 acc
               </span>
             </div>
           </div>
         ) : (
-          <span className="text-xs font-sans italic text-[var(--text-sub)] bg-[var(--bg-sub)] px-3 py-1 rounded-full border border-[var(--border)]">
+          <span className="text-xs font-sans text-[var(--text-sub)] bg-[var(--bg-sub)] px-3 py-1 rounded-[4px] border border-[var(--border)]">
             Blind Mode Active
           </span>
         )}
       </div>
 
-      <div className="w-full h-1 mt-3 bg-[var(--bg-sub)] rounded-full overflow-hidden border border-[var(--border)]/40">
+      {/* Low-profile Progress Bar */}
+      <div className="w-full h-[2px] mt-4 bg-[var(--border)] rounded-full overflow-hidden">
         <div
-          className="h-full bg-gradient-to-r from-[var(--accent)] to-amber-300 transition-all duration-300 ease-out"
+          className="h-full bg-[var(--accent)] transition-all duration-200 ease-out"
           style={{ width: `${Math.min(100, progressPercent)}%` }}
         />
       </div>

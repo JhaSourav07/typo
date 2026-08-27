@@ -30,7 +30,6 @@ export const App: React.FC = () => {
     restartTest,
   } = useTypingEngine(settings);
 
-  // Global Keyboard Shortcuts
   useKeyboardShortcuts({
     onRestart: restartTest,
     onToggleSettings: () => setIsSettingsOpen((prev) => !prev),
@@ -38,8 +37,7 @@ export const App: React.FC = () => {
   });
 
   return (
-    <div className="min-h-screen flex flex-col bg-[var(--bg-main)] text-[var(--text-main)] transition-colors duration-300 font-sans">
-      {/* Top Header */}
+    <div className="min-h-screen flex flex-col bg-[var(--bg-main)] text-[var(--text-main)] transition-colors duration-200 font-sans">
       <Header
         settings={settings}
         onUpdateSettings={updateSettings}
@@ -48,7 +46,6 @@ export const App: React.FC = () => {
         status={status}
       />
 
-      {/* Main Content View */}
       <main className="flex-1 flex flex-col items-center justify-center p-4 sm:p-6 max-w-6xl mx-auto w-full">
         {status === 'completed' && result ? (
           <ResultsView
@@ -74,10 +71,8 @@ export const App: React.FC = () => {
         )}
       </main>
 
-      {/* Bottom Footer */}
-      <Footer onRestart={restartTest} status={status} />
+      <Footer onRestart={restartTest} />
 
-      {/* Customization Settings Modal */}
       <SettingsModal
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
@@ -86,7 +81,6 @@ export const App: React.FC = () => {
         onResetSettings={resetSettings}
       />
 
-      {/* Keyboard Shortcuts Help Modal */}
       <ShortcutsModal
         isOpen={isShortcutsOpen}
         onClose={() => setIsShortcutsOpen(false)}
