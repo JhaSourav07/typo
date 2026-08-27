@@ -48,12 +48,17 @@ export function useTypingEngine(settings: TestSettings) {
   // Sound synthesis
   const { playKeySound } = useSoundEffects(settings.soundProfile, settings.soundVolume);
 
-  // Timer intervals
+  // High precision timestamp refs
+  const startTimeRef = useRef<number | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Reset or Init Test
+  // Clean Reset or Init Test
   const initTest = useCallback(() => {
-    if (timerRef.current) clearInterval(timerRef.current);
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+    startTimeRef.current = null;
 
     const newWords = generateTestWords(settings);
     setWords(newWords);
@@ -79,11 +84,17 @@ export function useTypingEngine(settings: TestSettings) {
 
   useEffect(() => {
     initTest();
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
   }, [initTest]);
 
   // Complete test function
   const finishTest = useCallback(() => {
-    if (timerRef.current) clearInterval(timerRef.current);
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
 
     setStatus('completed');
 
@@ -123,49 +134,55 @@ export function useTypingEngine(settings: TestSettings) {
     setResult(finalResult);
   }, [settings, timeLeft, timeElapsed]);
 
-  // Start test on first keydown
+  // Start test on first keydown using monotonic performance.now()
   const startTest = useCallback(() => {
+    if (status !== 'idle') return;
+
     setStatus('running');
+    startTimeRef.current = performance.now();
 
     timerRef.current = setInterval(() => {
-      setTimeElapsed((prevElapsed) => {
-        const nextElapsed = prevElapsed + 1;
+      if (!startTimeRef.current) return;
+      const now = performance.now();
+      const elapsedSeconds = Math.floor((now - startTimeRef.current) / 1000);
 
-        const raw = calculateRawWpm(totalKeystrokesRef.current, nextElapsed);
-        const net = calculateNetWpm(correctCharsCountRef.current, nextElapsed);
-        const acc = calculateAccuracy(correctKeystrokesRef.current, totalKeystrokesRef.current);
+      setTimeElapsed(elapsedSeconds);
 
-        setLiveRawWpm(raw);
-        setLiveWpm(net);
-        setLiveAccuracy(acc);
+      if (settings.mode === 'time') {
+        const remaining = settings.timeOption - elapsedSeconds;
+        if (remaining <= 0) {
+          setTimeLeft(0);
+          finishTest();
+          return;
+        }
+        setTimeLeft(remaining);
+      }
 
+      // Update live metrics
+      const raw = calculateRawWpm(totalKeystrokesRef.current, elapsedSeconds);
+      const net = calculateNetWpm(correctCharsCountRef.current, elapsedSeconds);
+      const acc = calculateAccuracy(correctKeystrokesRef.current, totalKeystrokesRef.current);
+
+      setLiveRawWpm(raw);
+      setLiveWpm(net);
+      setLiveAccuracy(acc);
+
+      // Record timeline data point per second
+      if (elapsedSeconds > 0 && timelineRef.current.length < elapsedSeconds) {
         timelineRef.current.push({
-          second: nextElapsed,
+          second: elapsedSeconds,
           wpm: net,
           rawWpm: raw,
           errors: incorrectCharsCountRef.current + extraCharsCountRef.current
         });
-
-        return nextElapsed;
-      });
-
-      if (settings.mode === 'time') {
-        setTimeLeft((prevTime) => {
-          if (prevTime <= 1) {
-            finishTest();
-            return 0;
-          }
-          return prevTime - 1;
-        });
       }
-    }, 1000);
-  }, [settings.mode, finishTest]);
+    }, 100);
+  }, [status, settings.mode, settings.timeOption, finishTest]);
 
   // Keydown Handler
   const handleKeyDown = useCallback((e: React.KeyboardEvent | KeyboardEvent) => {
     if (status === 'completed') return;
 
-    // Prevent default scrolling for Space / Tab / Backspace
     if (['Tab', 'Space', 'Backspace'].includes(e.code) || e.key.length === 1) {
       if (e.key === ' ' || e.code === 'Space') e.preventDefault();
     }
@@ -233,7 +250,6 @@ export function useTypingEngine(settings: TestSettings) {
 
       const currentWord = words[currentWordIndex];
 
-      // Strict Mode: Block spacebar if word has uncorrected errors
       if (settings.strictMode && currentWord) {
         const hasErrors = currentWord.chars.some(c => c.state === 'incorrect' || c.state === 'extra');
         if (hasErrors) {
@@ -250,18 +266,16 @@ export function useTypingEngine(settings: TestSettings) {
 
       if (isWordFullyCorrect) {
         correctKeystrokesRef.current += 1;
-        correctCharsCountRef.current += 1; // space character counted
+        correctCharsCountRef.current += 1;
       } else if (currentWord) {
         const untypedCount = currentWord.chars.filter(c => c.state === 'untyped').length;
         missedCharsCountRef.current += untypedCount;
       }
 
-      // Check if we need to replenish words (Time mode endless stream)
       if (settings.mode === 'time' && words.length - currentWordIndex < 30) {
         setWords((prev) => [...prev, ...generateTestWords(settings)]);
       }
 
-      // Completion conditions
       const maxWordsTarget = settings.mode === 'words' ? settings.wordOption : words.length;
 
       if (currentWordIndex + 1 >= maxWordsTarget) {
@@ -324,7 +338,6 @@ export function useTypingEngine(settings: TestSettings) {
 
       const currentWordObj = words[currentWordIndex];
 
-      // Quote or Code mode finish check
       if (
         (settings.mode === 'quote' || settings.mode === 'code') &&
         currentWordIndex === words.length - 1 &&
@@ -335,7 +348,7 @@ export function useTypingEngine(settings: TestSettings) {
     }
   }, [status, isFocused, currentWordIndex, currentCharIndex, words, settings, startTest, finishTest, playKeySound]);
 
-  // Window-level key listener for seamless typing without manual clicking
+  // Global window keydown listener
   useEffect(() => {
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
       if (['INPUT', 'TEXTAREA', 'SELECT'].includes((e.target as HTMLElement)?.tagName)) {
