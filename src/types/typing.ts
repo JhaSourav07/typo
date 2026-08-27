@@ -1,8 +1,6 @@
-export type TestMode = 'time' | 'words' | 'quote' | 'code';
+export type TestMode = 'time' | 'words';
 export type TimeOption = 15 | 30 | 60 | 120;
 export type WordOption = 10 | 25 | 50 | 100;
-export type QuoteOption = 'short' | 'medium' | 'long';
-export type CodeOption = 'javascript' | 'python' | 'html' | 'sql';
 
 export type FontFamily = 'jetbrains' | 'firacode' | 'robotomono' | 'inter';
 export type ThemeId = 'obsidian' | 'cyber' | 'nord' | 'monokai' | 'pure-minimal';
@@ -13,8 +11,6 @@ export interface TestSettings {
   mode: TestMode;
   timeOption: TimeOption;
   wordOption: WordOption;
-  quoteOption: QuoteOption;
-  codeOption: CodeOption;
   numbers: boolean;
   punctuation: boolean;
   strictMode: boolean;

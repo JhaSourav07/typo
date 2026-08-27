@@ -108,11 +108,9 @@ export function useTypingEngine(settings: TestSettings) {
     const finalAccuracy = calculateAccuracy(correctKeystrokesRef.current, totalKeystrokesRef.current);
     const finalConsistency = calculateConsistency(timelineRef.current);
 
-    let modeSummaryStr = '';
-    if (settings.mode === 'time') modeSummaryStr = `Time ${settings.timeOption}s`;
-    else if (settings.mode === 'words') modeSummaryStr = `Words ${settings.wordOption}`;
-    else if (settings.mode === 'quote') modeSummaryStr = `Quote (${settings.quoteOption})`;
-    else if (settings.mode === 'code') modeSummaryStr = `Code (${settings.codeOption})`;
+    const modeSummaryStr = settings.mode === 'time'
+      ? `Time ${settings.timeOption}s`
+      : `Words ${settings.wordOption}`;
 
     const finalResult: TestResult = {
       finalWpm: finalNetWpm,
@@ -272,10 +270,12 @@ export function useTypingEngine(settings: TestSettings) {
         missedCharsCountRef.current += untypedCount;
       }
 
+      // Time mode endless streaming
       if (settings.mode === 'time' && words.length - currentWordIndex < 30) {
         setWords((prev) => [...prev, ...generateTestWords(settings)]);
       }
 
+      // Word mode completion check vs Time mode endless stream
       const maxWordsTarget = settings.mode === 'words' ? settings.wordOption : words.length;
 
       if (currentWordIndex + 1 >= maxWordsTarget) {
@@ -338,9 +338,10 @@ export function useTypingEngine(settings: TestSettings) {
 
       const currentWordObj = words[currentWordIndex];
 
+      // Word mode last character completion check
       if (
-        (settings.mode === 'quote' || settings.mode === 'code') &&
-        currentWordIndex === words.length - 1 &&
+        settings.mode === 'words' &&
+        currentWordIndex === settings.wordOption - 1 &&
         nextCharIndex >= currentWordObj.originalWord.length
       ) {
         setTimeout(finishTest, 50);

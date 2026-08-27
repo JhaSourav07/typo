@@ -5,8 +5,6 @@ const DEFAULT_SETTINGS: TestSettings = {
   mode: 'time',
   timeOption: 60,
   wordOption: 25,
-  quoteOption: 'medium',
-  codeOption: 'javascript',
   numbers: false,
   punctuation: false,
   strictMode: false,
