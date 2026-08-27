@@ -48,15 +48,20 @@ export function useTypingEngine(settings: TestSettings) {
   // Sound synthesis
   const { playKeySound } = useSoundEffects(settings.soundProfile, settings.soundVolume);
 
-  // High precision timestamp refs
+  // High precision timestamp & timeout refs
   const startTimeRef = useRef<number | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const finishTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Clean Reset or Init Test
   const initTest = useCallback(() => {
     if (timerRef.current) {
       clearInterval(timerRef.current);
       timerRef.current = null;
+    }
+    if (finishTimeoutRef.current) {
+      clearTimeout(finishTimeoutRef.current);
+      finishTimeoutRef.current = null;
     }
     startTimeRef.current = null;
 
@@ -86,6 +91,7 @@ export function useTypingEngine(settings: TestSettings) {
     initTest();
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
+      if (finishTimeoutRef.current) clearTimeout(finishTimeoutRef.current);
     };
   }, [initTest]);
 
@@ -94,6 +100,10 @@ export function useTypingEngine(settings: TestSettings) {
     if (timerRef.current) {
       clearInterval(timerRef.current);
       timerRef.current = null;
+    }
+    if (finishTimeoutRef.current) {
+      clearTimeout(finishTimeoutRef.current);
+      finishTimeoutRef.current = null;
     }
 
     setStatus('completed');
@@ -244,7 +254,8 @@ export function useTypingEngine(settings: TestSettings) {
 
     // Process Spacebar (Advance Word)
     if (e.key === ' ' || e.code === 'Space') {
-      if (currentCharIndex === 0 && currentWordIndex === 0) return;
+      // Prevent spacing on untyped empty word
+      if (currentCharIndex === 0) return;
 
       const currentWord = words[currentWordIndex];
 
@@ -344,7 +355,7 @@ export function useTypingEngine(settings: TestSettings) {
         currentWordIndex === settings.wordOption - 1 &&
         nextCharIndex >= currentWordObj.originalWord.length
       ) {
-        setTimeout(finishTest, 50);
+        finishTimeoutRef.current = setTimeout(finishTest, 20);
       }
     }
   }, [status, isFocused, currentWordIndex, currentCharIndex, words, settings, startTest, finishTest, playKeySound]);
