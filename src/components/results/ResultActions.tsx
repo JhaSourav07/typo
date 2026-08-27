@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import { Button } from '../ui/Button';
-import { RefreshCw, RotateCcw, Copy, Check } from 'lucide-react';
+import { RefreshCw, Sliders, Copy, Check } from 'lucide-react';
 import type { TestResult } from '../../types/typing';
 
 interface ResultActionsProps {
   result: TestResult;
-  onNextTest: () => void;
-  onRestartSame: () => void;
+  onRestartTest: () => void;
+  onChangeTest: () => void;
 }
 
 export const ResultActions: React.FC<ResultActionsProps> = ({
   result,
-  onNextTest,
-  onRestartSame,
+  onRestartTest,
+  onChangeTest,
 }) => {
   const [copied, setCopied] = useState(false);
 
@@ -31,22 +31,22 @@ Built on Typo Platform`;
 
   return (
     <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
-      <Button variant="primary" size="lg" onClick={onNextTest}>
+      <Button variant="primary" size="lg" onClick={onRestartTest}>
         <RefreshCw className="w-4 h-4" />
-        <span>Next Test</span>
+        <span>Restart Test</span>
         <kbd className="ml-1 px-1.5 py-0.5 text-[10px] font-mono rounded-[3px] bg-white/20 text-white font-bold">
           Tab + Enter
         </kbd>
       </Button>
 
-      <Button variant="secondary" size="lg" onClick={onRestartSame}>
-        <RotateCcw className="w-4 h-4" />
-        <span>Retry Same</span>
+      <Button variant="secondary" size="lg" onClick={onChangeTest}>
+        <Sliders className="w-4 h-4" />
+        <span>Change Mode</span>
       </Button>
 
       <Button variant="secondary" size="lg" onClick={copyResultSummary}>
         {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-        <span>{copied ? 'Copied to Clipboard!' : 'Copy Summary'}</span>
+        <span>{copied ? 'Copied!' : 'Copy Summary'}</span>
       </Button>
     </div>
   );

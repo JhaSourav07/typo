@@ -8,14 +8,14 @@ import { ResultActions } from './ResultActions';
 
 interface ResultsViewProps {
   result: TestResult;
-  onNextTest: () => void;
-  onRestartSame: () => void;
+  onRestartTest: () => void;
+  onChangeTest: () => void;
 }
 
 export const ResultsView: React.FC<ResultsViewProps> = ({
   result,
-  onNextTest,
-  onRestartSame,
+  onRestartTest,
+  onChangeTest,
 }) => {
   useEffect(() => {
     // Subtle, restrained celebration burst
@@ -37,22 +37,24 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
   const totalErrors = result.incorrectChars + result.extraChars;
 
   return (
-    <div className="w-full max-w-4xl mx-auto py-8 px-4 animate-fade-in my-auto">
-      <div className="flex items-center justify-between mb-6 border-b border-[var(--border)] pb-4">
+    <div className="w-full max-w-4xl mx-auto py-6 px-4 animate-fade-in my-auto">
+      {/* Session Summary Header */}
+      <div className="flex items-center justify-between mb-4 border-b border-[var(--border)] pb-3">
         <div>
-          <h1 className="text-xl font-bold font-sans tracking-tight text-[var(--text-main)]">
-            Test Performance Summary
+          <h1 className="text-lg font-bold font-sans tracking-tight text-[var(--text-main)]">
+            Performance Summary
           </h1>
-          <p className="text-xs text-[var(--text-sub)] font-mono tabular-nums">
-            {result.modeSummary} • Completed at {result.completedAt}
+          <p className="text-xs text-[var(--text-sub)] font-mono tabular-nums mt-0.5">
+            {result.modeSummary} • {result.totalChars} chars typed • {result.completedAt}
           </p>
         </div>
 
-        <div className="px-3 py-1 rounded-[4px] bg-[var(--accent)]/15 border border-[var(--accent)]/30 text-[var(--accent)] text-xs font-semibold font-mono">
+        <div className="px-2.5 py-1 rounded-[4px] bg-[var(--accent)]/15 border border-[var(--accent)]/30 text-[var(--accent)] text-xs font-semibold font-mono">
           Phase 1 Single-Player
         </div>
       </div>
 
+      {/* Hero Metric Cards (Large WPM, Accuracy, Consistency, Supporting Stats) */}
       <HeroMetricCard
         finalWpm={result.finalWpm}
         rawWpm={result.rawWpm}
@@ -62,8 +64,10 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
         totalErrors={totalErrors}
       />
 
+      {/* Speed Timeline Chart */}
       <PerformanceChart timeline={result.timeline} />
 
+      {/* Keystrokes & Problem Key Heatmap */}
       <KeyBreakdown
         correctChars={result.correctChars}
         incorrectChars={result.incorrectChars}
@@ -72,10 +76,11 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
         keyStats={result.keyStats}
       />
 
+      {/* Primary Actions */}
       <ResultActions
         result={result}
-        onNextTest={onNextTest}
-        onRestartSame={onRestartSame}
+        onRestartTest={onRestartTest}
+        onChangeTest={onChangeTest}
       />
     </div>
   );

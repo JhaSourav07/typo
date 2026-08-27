@@ -49,8 +49,8 @@ export const App: React.FC = () => {
         {status === 'completed' && result ? (
           <ResultsView
             result={result}
-            onNextTest={restartTest}
-            onRestartSame={restartTest}
+            onRestartTest={restartTest}
+            onChangeTest={restartTest}
           />
         ) : (
           <TypingArea
