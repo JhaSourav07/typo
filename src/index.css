@@ -14,9 +14,9 @@
     --radius-xl: 12px;
 
     /* Design Tokens - Durations & Transitions */
-    --duration-fast: 120ms;
-    --duration-normal: 200ms;
-    --duration-slow: 300ms;
+    --duration-fast: 80ms;
+    --duration-normal: 180ms;
+    --duration-slow: 250ms;
     --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 
     /* Design Tokens - Z-Indexes */
@@ -206,6 +206,15 @@ body {
 
 .caret-pulse {
   animation: pulse-caret 1s infinite ease-in-out;
+}
+
+/* Accessibility: Prefers Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* Focus Ring Utility */

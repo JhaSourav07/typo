@@ -18,13 +18,15 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
   onRestartSame,
 }) => {
   useEffect(() => {
-    if (result.finalWpm >= 40 && result.accuracy >= 90) {
+    // Subtle, restrained celebration burst
+    if (result.finalWpm >= 50 && result.accuracy >= 92) {
       try {
         confetti({
-          particleCount: 60,
-          spread: 50,
-          origin: { y: 0.7 },
-          colors: ['#8b5cf6', '#7c3aed', '#10b981', '#38bdf8'],
+          particleCount: 35,
+          spread: 40,
+          origin: { y: 0.75 },
+          colors: ['#8b5cf6', '#7c3aed', '#10b981'],
+          disableForReducedMotion: true,
         });
       } catch {
         // Fallback
