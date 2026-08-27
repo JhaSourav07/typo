@@ -43,7 +43,6 @@ export const App: React.FC = () => {
         onUpdateSettings={updateSettings}
         onOpenSettings={() => setIsSettingsOpen(true)}
         onOpenShortcuts={() => setIsShortcutsOpen(true)}
-        status={status}
       />
 
       <main className="flex-1 flex flex-col items-center justify-center p-4 sm:p-6 max-w-6xl mx-auto w-full">
@@ -59,6 +58,7 @@ export const App: React.FC = () => {
             currentWordIndex={currentWordIndex}
             currentCharIndex={currentCharIndex}
             settings={settings}
+            onUpdateSettings={updateSettings}
             status={status}
             timeLeft={timeLeft}
             timeElapsed={timeElapsed}

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Settings, Volume2, VolumeX, Keyboard } from 'lucide-react';
 import type { TestSettings } from '../../types/typing';
-import { ModeSelector } from '../controls/ModeSelector';
 import { IconButton } from '../ui/IconButton';
 
 interface HeaderProps {
@@ -9,7 +8,6 @@ interface HeaderProps {
   onUpdateSettings: (partial: Partial<TestSettings>) => void;
   onOpenSettings: () => void;
   onOpenShortcuts: () => void;
-  status: 'idle' | 'running' | 'completed';
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -17,7 +15,6 @@ export const Header: React.FC<HeaderProps> = ({
   onUpdateSettings,
   onOpenSettings,
   onOpenShortcuts,
-  status,
 }) => {
   const isMuted = settings.soundProfile === 'off';
 
@@ -29,10 +26,10 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <header className="w-full py-4 px-4 sm:px-8 border-b border-[var(--border)] bg-[var(--bg-main)]/90 backdrop-blur-xs sticky top-0 z-30 transition-all duration-200">
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      <div className="max-w-6xl mx-auto flex items-center justify-between">
         {/* Brand Logo */}
-        <div className="flex items-center gap-3 select-none">
-          <div className="w-8 h-8 rounded-md bg-[var(--accent)] flex items-center justify-center text-white font-extrabold font-mono text-base shadow-sm">
+        <div className="flex items-center gap-2.5 select-none">
+          <div className="w-7 h-7 rounded-md bg-[var(--accent)] flex items-center justify-center text-white font-extrabold font-mono text-sm shadow-xs">
             T
           </div>
           <div className="flex items-center gap-2">
@@ -43,12 +40,7 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
 
-        {/* Mode Selector Toolbar */}
-        <div className={`transition-opacity duration-200 ${status === 'running' ? 'opacity-30 pointer-events-none' : 'opacity-100'}`}>
-          <ModeSelector settings={settings} onUpdateSettings={onUpdateSettings} />
-        </div>
-
-        {/* Header Right Actions */}
+        {/* Top Right Quick Actions */}
         <div className="flex items-center gap-1.5">
           <IconButton
             icon={isMuted ? <VolumeX className="w-4 h-4 text-red-400" /> : <Volume2 className="w-4 h-4 text-[var(--accent)]" />}

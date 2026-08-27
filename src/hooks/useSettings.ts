@@ -3,7 +3,7 @@ import type { TestSettings } from '../types/typing';
 
 const DEFAULT_SETTINGS: TestSettings = {
   mode: 'time',
-  timeOption: 30,
+  timeOption: 60,
   wordOption: 25,
   quoteOption: 'medium',
   codeOption: 'javascript',

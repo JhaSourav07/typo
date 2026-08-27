@@ -38,8 +38,5 @@ export function calculateConsistency(timeline: TimelineDataPoint[]): number {
 export function formatTime(seconds: number): string {
   const mins = Math.floor(seconds / 60);
   const secs = seconds % 60;
-  if (mins > 0) {
-    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-  }
-  return `${secs}s`;
+  return `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
 }

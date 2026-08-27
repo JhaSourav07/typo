@@ -29,7 +29,7 @@ export const LiveMetrics: React.FC<LiveMetricsProps> = ({
   let progressPercent = 0;
 
   if (settings.mode === 'time') {
-    timeDisplay = `${timeLeft}`;
+    timeDisplay = formatTime(timeLeft);
     progressPercent = ((settings.timeOption - timeLeft) / settings.timeOption) * 100;
   } else {
     timeDisplay = formatTime(timeElapsed);
@@ -37,51 +37,52 @@ export const LiveMetrics: React.FC<LiveMetricsProps> = ({
   }
 
   return (
-    <div className="w-full mb-8 transition-all duration-200">
-      {/* Live Metrics Toolbar */}
-      <div className="flex items-center justify-between font-mono text-sm px-1">
-        {/* Timer / Counter */}
-        <div className="flex items-baseline gap-2">
-          <span className="text-3xl sm:text-4xl font-extrabold text-[var(--accent)] tracking-tight tabular-nums">
-            {timeDisplay}
-          </span>
-          {settings.mode === 'words' && (
-            <span className="text-xs text-[var(--text-sub)] tabular-nums">
-              / {settings.wordOption} words
+    <div className="w-full mt-6 transition-all duration-200">
+      {/* Live Metrics Ticker positioned below text */}
+      {!settings.blindMode ? (
+        <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12 font-mono text-sm sm:text-base tabular-nums select-none py-2">
+          {/* Live WPM */}
+          <div className="flex items-baseline gap-2">
+            <span className="text-2xl sm:text-3xl font-extrabold text-[var(--text-main)]">
+              {isRunning ? liveWpm : 0}
             </span>
-          )}
-        </div>
-
-        {/* Live WPM & Accuracy (hidden in Blind Mode) */}
-        {!settings.blindMode ? (
-          <div className="flex items-center gap-8">
-            <div className="flex items-baseline gap-1.5">
-              <span className="text-2xl sm:text-3xl font-bold text-[var(--text-main)] tabular-nums">
-                {isRunning ? liveWpm : 0}
-              </span>
-              <span className="text-[11px] font-sans text-[var(--text-sub)] uppercase font-semibold tracking-wider">
-                wpm
-              </span>
-            </div>
-
-            <div className="flex items-baseline gap-1.5">
-              <span className="text-2xl sm:text-3xl font-bold text-[var(--text-main)] tabular-nums">
-                {isRunning ? `${liveAccuracy}%` : '100%'}
-              </span>
-              <span className="text-[11px] font-sans text-[var(--text-sub)] uppercase font-semibold tracking-wider">
-                acc
-              </span>
-            </div>
+            <span className="text-xs font-sans text-[var(--text-sub)] uppercase font-semibold tracking-wider">
+              WPM
+            </span>
           </div>
-        ) : (
+
+          {/* Live Accuracy */}
+          <div className="flex items-baseline gap-2">
+            <span className="text-2xl sm:text-3xl font-extrabold text-[var(--text-main)]">
+              {isRunning ? `${liveAccuracy}%` : '100%'}
+            </span>
+            <span className="text-xs font-sans text-[var(--text-sub)] uppercase font-semibold tracking-wider">
+              ACC
+            </span>
+          </div>
+
+          {/* Time Remaining / Counter */}
+          <div className="flex items-baseline gap-2">
+            <span className="text-2xl sm:text-3xl font-extrabold text-[var(--accent)]">
+              {timeDisplay}
+            </span>
+            {settings.mode === 'words' && (
+              <span className="text-xs font-sans text-[var(--text-sub)] uppercase font-semibold tracking-wider">
+                ({currentWordIndex}/{settings.wordOption})
+              </span>
+            )}
+          </div>
+        </div>
+      ) : (
+        <div className="flex justify-center py-2">
           <span className="text-xs font-sans text-[var(--text-sub)] bg-[var(--bg-sub)] px-3 py-1 rounded-[4px] border border-[var(--border)]">
             Blind Mode Active
           </span>
-        )}
-      </div>
+        </div>
+      )}
 
-      {/* Low-profile Progress Bar */}
-      <div className="w-full h-[2px] mt-4 bg-[var(--border)] rounded-full overflow-hidden">
+      {/* Subtle Progress Bar */}
+      <div className="w-full h-[2px] mt-2 bg-[var(--border)] rounded-full overflow-hidden opacity-60">
         <div
           className="h-full bg-[var(--accent)] transition-all duration-200 ease-out"
           style={{ width: `${Math.min(100, progressPercent)}%` }}

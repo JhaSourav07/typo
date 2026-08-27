@@ -4,12 +4,14 @@ import { WordDisplay } from './WordDisplay';
 import { Caret } from './Caret';
 import { LiveMetrics } from './LiveMetrics';
 import { FocusOverlay } from './FocusOverlay';
+import { ModeSelector } from '../controls/ModeSelector';
 
 interface TypingAreaProps {
   words: WordData[];
   currentWordIndex: number;
   currentCharIndex: number;
   settings: TestSettings;
+  onUpdateSettings: (partial: Partial<TestSettings>) => void;
   status: EngineStatus;
   timeLeft: number;
   timeElapsed: number;
@@ -25,6 +27,7 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
   currentWordIndex,
   currentCharIndex,
   settings,
+  onUpdateSettings,
   status,
   timeLeft,
   timeElapsed,
@@ -53,7 +56,6 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
 
       setCaretPos({ top, left, height });
 
-      // Smooth line scroll adjustment
       const lineTop = charRect.top - containerRect.top;
       if (lineTop > 95) {
         containerRef.current.scrollTop += 48;
@@ -89,20 +91,13 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
   const fontClass = `font-${settings.fontFamily}`;
 
   return (
-    <div className="w-full max-w-4xl mx-auto flex flex-col items-center justify-center my-auto py-8">
-      {/* Live Metrics Toolbar */}
-      <LiveMetrics
-        settings={settings}
-        status={status}
-        timeLeft={timeLeft}
-        timeElapsed={timeElapsed}
-        liveWpm={liveWpm}
-        liveAccuracy={liveAccuracy}
-        currentWordIndex={currentWordIndex}
-        totalWords={words.length}
-      />
+    <div className="w-full max-w-4xl mx-auto flex flex-col items-center justify-center my-auto py-4 sm:py-8 px-2 sm:px-4">
+      {/* 1. Mode Configuration Controls (Above Text Area) */}
+      <div className={`mb-8 transition-opacity duration-200 ${status === 'running' ? 'opacity-20 pointer-events-none' : 'opacity-100'}`}>
+        <ModeSelector settings={settings} onUpdateSettings={onUpdateSettings} />
+      </div>
 
-      {/* Primary Open Typing Canvas (Borderless & Spacious) */}
+      {/* 2. Primary Typing Text Canvas (Center & Visually Dominant) */}
       <div
         ref={containerRef}
         tabIndex={0}
@@ -110,14 +105,12 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         onKeyDown={onKeyDown}
-        className={`relative w-full h-[155px] overflow-hidden p-2 text-2xl sm:text-3xl leading-[3rem] select-none focus:outline-none transition-all duration-200 ${fontClass} ${
+        className={`relative w-full h-[160px] overflow-hidden p-2 text-2xl sm:text-3xl leading-[3.2rem] select-none focus:outline-none transition-all duration-200 ${fontClass} ${
           isFocused ? 'opacity-100' : 'opacity-40 blur-[1px]'
         }`}
       >
-        {/* Focus Overlay when canvas loses focus */}
         <FocusOverlay isFocused={isFocused} onFocus={handleContainerClick} />
 
-        {/* Subpixel Animated Caret */}
         {isFocused && status !== 'completed' && (
           <Caret
             style={settings.caretStyle}
@@ -127,8 +120,7 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
           />
         )}
 
-        {/* Open Words Layout */}
-        <div className="flex flex-wrap items-center content-start min-h-[130px]">
+        <div className="flex flex-wrap items-center content-start min-h-[135px]">
           {words.map((wordData, wordIndex) => {
             const isCurrentWord = wordIndex === currentWordIndex;
             return (
@@ -152,6 +144,18 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
           })}
         </div>
       </div>
+
+      {/* 3. Live Metrics (Below Text Area) */}
+      <LiveMetrics
+        settings={settings}
+        status={status}
+        timeLeft={timeLeft}
+        timeElapsed={timeElapsed}
+        liveWpm={liveWpm}
+        liveAccuracy={liveAccuracy}
+        currentWordIndex={currentWordIndex}
+        totalWords={words.length}
+      />
     </div>
   );
 };
